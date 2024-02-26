@@ -15,6 +15,8 @@ import {map} from "rxjs/operators";
 })
 export class AppComponent implements OnInit{
 
+
+
   constructor(private httpClient:HttpClient){}
 
   private baseURL:string='http://localhost:8080';
@@ -27,14 +29,17 @@ export class AppComponent implements OnInit{
   request!:ReserveRoomRequest;
   currentCheckInVal!:string;
   currentCheckOutVal!:string;
+  message: string = ''; // Singular message variable
+  messages: string[] = []; // Array of messages variable
 
-    ngOnInit(){
-      this.roomsearch= new FormGroup({
-        checkin: new FormControl(' '),
-        checkout: new FormControl(' ')
-      });
+  ngOnInit(){
+    this.roomsearch= new FormGroup({
 
- //     this.rooms=ROOMS;
+      checkin: new FormControl(' '),
+      checkout: new FormControl(' ')
+    });
+
+    //     this.rooms=ROOMS;
 
 
     const roomsearchValueChanges$ = this.roomsearch.valueChanges;
@@ -44,53 +49,77 @@ export class AppComponent implements OnInit{
       this.currentCheckInVal = x.checkin;
       this.currentCheckOutVal = x.checkout;
     });
+
+    // Subscribe to getMessages method
+    this.getMessages().subscribe(
+      (messages: string[]) => {
+        // Assign the received messages to the component's messages array
+        this.messages = messages;
+
+        // Log the received messages
+        console.log('Received messages:', this.messages);
+      },
+      error => {
+        // Handle any errors
+        console.error(error);
+      }
+    );
+
   }
 
-    onSubmit({value,valid}:{value:Roomsearch,valid:boolean}){
-      this.getAll().subscribe(
+  getMessages(): Observable<any> {
+// Assuming this.messages is an array of strings
+    const requestData = { messages: this.messages }; // Prepare data to send with the request
+    return this.httpClient.post(this.baseURL + '/welcome/messages', {responseType: 'json'});
+  }
 
-        rooms => {console.log(Object.values(rooms)[0]);this.rooms=<Room[]>Object.values(rooms)[0]; }
+
+  onSubmit({value,valid}:{value:Roomsearch,valid:boolean}){
+    this.getAll().subscribe(
+
+      rooms => {console.log(Object.values(rooms)[0]);this.rooms=<Room[]>Object.values(rooms)[0]; }
 
 
-      );
-    }
-    reserveRoom(value:string){
-      this.request = new ReserveRoomRequest(value, this.currentCheckInVal, this.currentCheckOutVal);
+    );
+  }
+  reserveRoom(value:string){
+    this.request = new ReserveRoomRequest(value, this.currentCheckInVal, this.currentCheckOutVal);
 
-      this.createReservation(this.request);
-    }
-    createReservation(body:ReserveRoomRequest) {
-      let bodyString = JSON.stringify(body); // Stringify payload
-      let headers = new Headers({'Content-Type': 'application/json'}); // ... Set content type to JSON
-     // let options = new RequestOptions({headers: headers}); // Create a request option
+    this.createReservation(this.request);
+  }
+  createReservation(body:ReserveRoomRequest) {
+    let bodyString = JSON.stringify(body); // Stringify payload
+    let headers = new Headers({'Content-Type': 'application/json'}); // ... Set content type to JSON
+    // let options = new RequestOptions({headers: headers}); // Create a request option
 
-     const options = {
+    const options = {
       headers: new HttpHeaders().append('key', 'value'),
 
     }
 
-      this.httpClient.post(this.postUrl, body, options)
-        .subscribe(res => console.log(res));
-    }
+    this.httpClient.post(this.postUrl, body, options)
+      .subscribe(res => console.log(res));
+  }
 
   /*mapRoom(response:HttpResponse<any>): Room[]{
     return response.body;
   }*/
 
-    getAll(): Observable<any> {
 
 
-       return this.httpClient.get(this.baseURL + '/room/reservation/v1?checkin='+ this.currentCheckInVal + '&checkout='+this.currentCheckOutVal, {responseType: 'json'});
-    }
+  getAll(): Observable<any> {
 
+    return this.httpClient.get(this.baseURL + '/room/reservation/v1?checkin='+ this.currentCheckInVal + '&checkout='+this.currentCheckOutVal, {responseType: 'json'});
   }
+
+}
 
 
 
 export interface Roomsearch{
-    checkin:string;
-    checkout:string;
-  }
+  checkin:string;
+  checkout:string;
+}
 
 
 
@@ -138,4 +167,3 @@ var ROOMS: Room[]=[
   "links" : ""
 }
 ] */
-
