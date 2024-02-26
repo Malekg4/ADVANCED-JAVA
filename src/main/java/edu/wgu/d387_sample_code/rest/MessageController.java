@@ -23,7 +23,6 @@ public class MessageController {
 
         return future;
     }
-
     private String[] loadMessagesFromFile(String fileName) {
         try {
             Properties properties = new Properties();

@@ -66,7 +66,6 @@ export class AppComponent implements OnInit{
     );
 
   }
-
   getMessages(): Observable<any> {
 // Assuming this.messages is an array of strings
     const requestData = { messages: this.messages }; // Prepare data to send with the request
