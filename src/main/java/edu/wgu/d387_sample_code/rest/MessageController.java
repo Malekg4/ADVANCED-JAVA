@@ -1,6 +1,8 @@
 package edu.wgu.d387_sample_code.rest;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.InputStream;
 import java.util.Properties;
@@ -8,9 +10,8 @@ import java.util.concurrent.CompletableFuture;
 
 @RestController
 public class MessageController {
-
     @CrossOrigin(origins = "http://localhost:4200")
-    @PostMapping("/welcome/messages")
+    @GetMapping("/welcome")
     public CompletableFuture<String[]> loadMessages() {
         CompletableFuture<String[]> future = new CompletableFuture<>();
 
@@ -23,6 +24,7 @@ public class MessageController {
 
         return future;
     }
+
     private String[] loadMessagesFromFile(String fileName) {
         try {
             Properties properties = new Properties();

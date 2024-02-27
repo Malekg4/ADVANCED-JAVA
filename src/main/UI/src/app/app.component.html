@@ -12,13 +12,12 @@
        style="display: block; top: auto; left: auto; bottom: auto; right: auto; position: relative; margin: 0 auto auto; box-sizing: content-box; width: 100%; min-height: 44px; height: auto; padding-top: 0; padding-bottom: 0;">
     <nav id="nav" style="position: relative; top: 0; left: 0; bottom: auto; right: auto; width: 100%;">
       <div class="navbar">
+
+
+        <h1>{{messages[0]}} {{messages[1]}}</h1>
+
+
         <div class="brand"><a href="/#welcome">Landon <span>Hotel</span></a></div>
-
-
-        <p>
-          {{messages[0]}} {{messages[1]}}
-        </p>
-
       </div><!-- navbar -->
     </nav>
   </div>
@@ -27,6 +26,12 @@
   <div class="scene" id="welcome">
     <article class="content">
 
+
+      <div>
+        <h2>Join us for an online live presentation held at</h2>
+        <h2>the London Hotel on Feb 29, 2024 at</h2>
+        <h2>{{ convertedTimes }}</h2>
+      </div>
 
 
       <div class="row">

@@ -15,8 +15,6 @@ import {map} from "rxjs/operators";
 })
 export class AppComponent implements OnInit{
 
-
-
   constructor(private httpClient:HttpClient){}
 
   private baseURL:string='http://localhost:8080';
@@ -29,8 +27,8 @@ export class AppComponent implements OnInit{
   request!:ReserveRoomRequest;
   currentCheckInVal!:string;
   currentCheckOutVal!:string;
-  message: string = ''; // Singular message variable
-  messages: string[] = []; // Array of messages variable
+  messages: string[] = [];
+  convertedTimes: string = '';
 
   ngOnInit(){
     this.roomsearch= new FormGroup({
@@ -50,27 +48,42 @@ export class AppComponent implements OnInit{
       this.currentCheckOutVal = x.checkout;
     });
 
-    // Subscribe to getMessages method
+
     this.getMessages().subscribe(
       (messages: string[]) => {
-        // Assign the received messages to the component's messages array
         this.messages = messages;
-
-        // Log the received messages
         console.log('Received messages:', this.messages);
       },
       error => {
-        // Handle any errors
         console.error(error);
+      }
+    );
+
+    this.getTime().subscribe(
+      (response: any) => {
+        this.convertedTimes = response.convertedTimes;
+      },
+      (error: any) => {
+        console.error('Error fetching converted times:', error);
       }
     );
 
   }
   getMessages(): Observable<any> {
-// Assuming this.messages is an array of strings
     const requestData = { messages: this.messages }; // Prepare data to send with the request
-    return this.httpClient.post(this.baseURL + '/welcome/messages', {responseType: 'json'});
+    return this.httpClient.get(this.baseURL + '/welcome', {responseType: 'json'});
   }
+
+ /* getTime(): Observable<any> {
+    const requestData = { convertedTimes: this.convertedTimes }; // Prepare data to send with the request
+    return this.httpClient.get(this.baseURL + '/api/time-conversion', {responseType: 'json'});
+  }
+*/
+
+  getTime(): Observable<any> {
+    return this.httpClient.get('http://localhost:8080/api/time-conversion');
+  }
+
 
 
   onSubmit({value,valid}:{value:Roomsearch,valid:boolean}){

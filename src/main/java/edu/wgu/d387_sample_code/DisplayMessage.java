@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 @SpringBootApplication
 public class DisplayMessage {
 
@@ -25,7 +26,6 @@ public class DisplayMessage {
                 properties.load(stream);
                 String welcomeMessage = properties.getProperty("welcome");
                 System.out.println(welcomeMessage);
-                // You may want to store the messages in a data structure or return them as needed.
             } catch (Exception e) {
                 e.printStackTrace();
             }
